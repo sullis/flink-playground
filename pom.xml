@@ -3,11 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>io.github.sullis</groupId>
-  <artifactId>foobar-playground</artifactId>
+  <artifactId>flink-playground</artifactId>
   <packaging>jar</packaging>
-  <name>foobar-playground</name>
+  <name>flink-playground</name>
   <version>0.0.1-SNAPSHOT</version>
-  <description>foobar-playground</description>
+  <description>flink-playground</description>
   <licenses>
     <license>
       <name>Apache License 2.0</name>
@@ -18,6 +18,7 @@
   <properties>
     <logback.version>1.5.6</logback.version>
     <slf4j.version>2.0.13</slf4j.version>
+    <flink.version>1.19.1</flink.version>
     <skip.tests>false</skip.tests>
   </properties>
 
@@ -43,6 +44,21 @@
         <version>2.26.16</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.flink</groupId>
+        <artifactId>flink-java</artifactId>
+        <version>${flink.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.flink</groupId>
+        <artifactId>flink-streaming-java</artifactId>
+        <version>${flink.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.flink</groupId>
+        <artifactId>flink-clients</artifactId>
+        <version>${flink.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
