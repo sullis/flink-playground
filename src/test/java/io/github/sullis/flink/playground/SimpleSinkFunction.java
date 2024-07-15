@@ -5,4 +5,10 @@ import org.apache.flink.types.Row;
 
 
 public class SimpleSinkFunction implements SinkFunction<Row> {
+  int invocationCount = 0;
+
+  @Override
+  public void invoke(Row value, Context context) throws Exception {
+    invocationCount++;
+  }
 }
