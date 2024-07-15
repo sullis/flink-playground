@@ -6,10 +6,12 @@ import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.common.typeinfo.Types;
 import org.apache.flink.api.java.typeutils.RowTypeInfo;
 import org.apache.flink.streaming.api.datastream.DataStream;
-import org.apache.flink.streaming.api.functions.sink.SinkFunction;
+import org.apache.flink.streaming.api.datastream.DataStreamSink;
 import org.apache.flink.types.Row;
 import org.junit.jupiter.api.Test;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class FlinkTest {
@@ -28,12 +30,20 @@ public class FlinkTest {
 
     DataStream<Row> sourceDataStream = env.fromCollection(data).returns(typeInfo);
 
-    SinkFunction<Row> sinkFunction = new SimpleSinkFunction();
+    SimpleSinkFunction sinkFunction = new SimpleSinkFunction();
 
-    sourceDataStream.addSink(sinkFunction);
+    DataStreamSink<Row> dataStreamSink = sourceDataStream.addSink(sinkFunction);
+
+    assertThat(dataStreamSink).isNotNull();
 
     env.execute();
     env.close();
+
+    assertThat(jobListener.jobSubmittedCount).isEqualTo(1);
+    assertThat(jobListener.jobExecutedCount).isEqualTo(1);
+
+    // System.out.println("sinkFunction: " + sinkFunction);
+    // assertThat(sinkFunction.invocationCount.intValue()).isEqualTo(1);
   }
 
   private Row makeRow() {

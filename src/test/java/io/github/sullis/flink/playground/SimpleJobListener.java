@@ -13,10 +13,16 @@ public class SimpleJobListener implements JobListener {
   @Override
   public void onJobSubmitted(@Nullable JobClient jobClient, @Nullable Throwable throwable) {
     jobSubmittedCount++;
+    if (throwable != null) {
+      throwable.printStackTrace();
+    }
   }
 
   @Override
   public void onJobExecuted(@Nullable JobExecutionResult jobExecutionResult, @Nullable Throwable throwable) {
     jobExecutedCount++;
+    if (throwable != null) {
+      throwable.printStackTrace();
+    }
   }
 }
