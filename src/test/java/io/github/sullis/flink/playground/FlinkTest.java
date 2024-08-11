@@ -7,6 +7,7 @@ import org.apache.flink.api.common.typeinfo.Types;
 import org.apache.flink.api.java.typeutils.RowTypeInfo;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSink;
+import org.apache.flink.streaming.api.environment.LocalStreamEnvironment;
 import org.apache.flink.types.Row;
 import org.junit.jupiter.api.Test;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -20,6 +21,7 @@ public class FlinkTest {
   void testStreamExecutionEnvironment() throws Exception {
     SimpleJobListener jobListener = new SimpleJobListener();
     StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+    assertThat(env).isInstanceOf(LocalStreamEnvironment.class);
     env.setParallelism(1);
     env.registerJobListener(jobListener);
     env.enableCheckpointing(1000);
