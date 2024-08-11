@@ -22,5 +22,8 @@ public class FlinkMiniClusterTest {
   public void testHappyPath() {
     StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
     assertThat(env).isInstanceOf(TestStreamEnvironment.class);
+    TestStreamEnvironment testEnv = (TestStreamEnvironment) env;
+    assertThat(testEnv.getParallelism()).isEqualTo(1);
+    assertThat(testEnv.getMaxParallelism()).isEqualTo(-1);
   }
 }
