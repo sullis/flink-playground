@@ -1,0 +1,3 @@
+metrics.reporters: test_reporter
+
+metrics.reporter.test_reporter.factory.class: io.github.sullis.flink.playground.TestReporter

@@ -12,6 +12,12 @@ import org.apache.flink.metrics.reporter.MetricReporter;
 import org.apache.flink.metrics.reporter.MetricReporterFactory;
 
 
+/*
+
+ Flink Metric Reporters
+ https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/metric_reporters/
+
+ */
 public class TestReporter extends AbstractReporter
     implements MetricReporterFactory {
 

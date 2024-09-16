@@ -5,10 +5,12 @@ import java.util.List;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.common.typeinfo.Types;
 import org.apache.flink.api.java.typeutils.RowTypeInfo;
+import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSink;
 import org.apache.flink.streaming.api.environment.LocalStreamEnvironment;
 import org.apache.flink.types.Row;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
@@ -17,10 +19,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class FlinkTest {
 
+  private Configuration config = FlinkTestConfig.resolveConfiguration();
+
+  @BeforeEach
+  public void beforeEach() {
+    config = FlinkTestConfig.resolveConfiguration();
+  }
+
   @Test
   void testStreamExecutionEnvironment() throws Exception {
+    assertThat(config.keySet()).contains("metrics.reporters");
     SimpleJobListener jobListener = new SimpleJobListener();
-    StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+    StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment(config);
     assertThat(env).isInstanceOf(LocalStreamEnvironment.class);
     env.setParallelism(1);
     env.registerJobListener(jobListener);
