@@ -27,6 +27,7 @@
   <properties>
     <logback.version>1.5.8</logback.version>
     <slf4j.version>2.0.16</slf4j.version>
+    <jackson.version>2.18.0</jackson.version>
     <flink.version>1.20.0</flink.version>
     <iceberg.flink.version>1.20</iceberg.flink.version>
     <iceberg.version>1.7.0-SNAPSHOT</iceberg.version>
@@ -60,6 +61,13 @@
         <groupId>software.amazon.awssdk</groupId>
         <artifactId>bom</artifactId>
         <version>2.28.10</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson</groupId>
+        <artifactId>jackson-bom</artifactId>
+        <version>${jackson.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -140,7 +148,10 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>2.18.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.flink</groupId>
