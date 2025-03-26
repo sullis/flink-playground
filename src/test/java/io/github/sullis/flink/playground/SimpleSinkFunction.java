@@ -2,7 +2,7 @@ package io.github.sullis.flink.playground;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.flink.api.common.eventtime.Watermark;
-import org.apache.flink.streaming.api.functions.sink.SinkFunction;
+import org.apache.flink.streaming.api.functions.sink.legacy.SinkFunction;
 import org.apache.flink.types.Row;
 
 
