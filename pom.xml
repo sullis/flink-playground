@@ -25,7 +25,7 @@
   </repositories>
 
   <properties>
-    <logback.version>1.5.19</logback.version>
+    <logback.version>1.5.20</logback.version>
     <slf4j.version>2.0.17</slf4j.version>
     <jackson.version>2.20.0</jackson.version>
     <flink.version>2.0.0</flink.version>
