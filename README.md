@@ -16,4 +16,5 @@ Apache Flink
 - [How to get data from Apache Kafka to Apache Iceberg on S3 ](https://www.decodable.co/blog/kafka-to-iceberg-with-decodable)
 
 
-
+# counterpoint
+- [flink is the problem](https://www.tinybird.co/blog/flink-is-95-problem)
