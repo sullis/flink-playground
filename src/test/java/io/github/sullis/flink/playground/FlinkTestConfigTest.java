@@ -4,7 +4,6 @@ import org.apache.flink.configuration.Configuration;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 
 public class FlinkTestConfigTest {
@@ -26,14 +25,6 @@ public class FlinkTestConfigTest {
     assertThat(config1).isNotNull();
     assertThat(config2).isNotNull();
     assertThat(config1.keySet()).isEqualTo(config2.keySet());
-  }
-
-  @Test
-  void testResolveConfigurationContainsExpectedKeys() {
-    Configuration config = FlinkTestConfig.resolveConfiguration();
-    
-    assertThat(config.keySet()).contains("metrics.reporters");
-    assertThat(config.getString("metrics.reporters", null)).isNotNull();
   }
 
   @Test

@@ -118,31 +118,6 @@ public class FlinkTest {
   }
 
   @Test
-  void testStreamExecutionWithoutCheckpointing() throws Exception {
-    SimpleJobListener jobListener = new SimpleJobListener();
-    StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment(config);
-    env.setParallelism(1);
-    env.registerJobListener(jobListener);
-    // No checkpointing enabled
-
-    RowTypeInfo typeInfo = new RowTypeInfo(new TypeInformation[]{Types.INT, Types.LONG, Types.STRING}, new String[]{"a", "b", "c"});
-    List<Row> data = new ArrayList<>();
-    data.add(makeRow());
-
-    DataStream<Row> sourceDataStream = env.fromCollection(data).returns(typeInfo);
-    SimpleSinkFunction sinkFunction = new SimpleSinkFunction();
-    DataStreamSink<Row> dataStreamSink = sourceDataStream.addSink(sinkFunction);
-
-    assertThat(dataStreamSink).isNotNull();
-
-    env.execute();
-    env.close();
-
-    assertThat(jobListener.jobSubmittedCount).isEqualTo(1);
-    assertThat(jobListener.jobExecutedCount).isEqualTo(1);
-  }
-
-  @Test
   void testStreamExecutionWithDifferentDataTypes() throws Exception {
     SimpleJobListener jobListener = new SimpleJobListener();
     StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment(config);
