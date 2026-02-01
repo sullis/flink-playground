@@ -26,4 +26,23 @@ public class FlinkTestConfigTest {
     assertThat(config2).isNotNull();
     assertThat(config1.keySet()).isEqualTo(config2.keySet());
   }
+
+  @Test
+  void testResolveConfigurationReturnsSameValues() {
+    Configuration config1 = FlinkTestConfig.resolveConfiguration();
+    Configuration config2 = FlinkTestConfig.resolveConfiguration();
+    
+    String value1 = config1.getString("metrics.reporters", null);
+    String value2 = config2.getString("metrics.reporters", null);
+    
+    assertThat(value1).isEqualTo(value2);
+  }
+
+  @Test
+  void testResolveConfigurationHasNonEmptyValues() {
+    Configuration config = FlinkTestConfig.resolveConfiguration();
+    
+    String metricsReporters = config.getString("metrics.reporters", "");
+    assertThat(metricsReporters).isNotEmpty();
+  }
 }
