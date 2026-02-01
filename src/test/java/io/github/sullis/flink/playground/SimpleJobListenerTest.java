@@ -21,8 +21,8 @@ public class SimpleJobListenerTest {
 
   @Test
   void testInitialCountsAreZero() {
-    assertThat(listener.jobSubmittedCount).isEqualTo(0);
-    assertThat(listener.jobExecutedCount).isEqualTo(0);
+    assertThat(listener.jobSubmittedCount.get()).isEqualTo(0);
+    assertThat(listener.jobExecutedCount.get()).isEqualTo(0);
   }
 
   @Test
@@ -31,16 +31,16 @@ public class SimpleJobListenerTest {
     
     listener.onJobSubmitted(mockJobClient, null);
     
-    assertThat(listener.jobSubmittedCount).isEqualTo(1);
-    assertThat(listener.jobExecutedCount).isEqualTo(0);
+    assertThat(listener.jobSubmittedCount.get()).isEqualTo(1);
+    assertThat(listener.jobExecutedCount.get()).isEqualTo(0);
   }
 
   @Test
   void testOnJobSubmittedWithNullJobClient() {
     listener.onJobSubmitted(null, null);
     
-    assertThat(listener.jobSubmittedCount).isEqualTo(1);
-    assertThat(listener.jobExecutedCount).isEqualTo(0);
+    assertThat(listener.jobSubmittedCount.get()).isEqualTo(1);
+    assertThat(listener.jobExecutedCount.get()).isEqualTo(0);
   }
 
   @Test
@@ -49,8 +49,8 @@ public class SimpleJobListenerTest {
     
     listener.onJobSubmitted(null, exception);
     
-    assertThat(listener.jobSubmittedCount).isEqualTo(1);
-    assertThat(listener.jobExecutedCount).isEqualTo(0);
+    assertThat(listener.jobSubmittedCount.get()).isEqualTo(1);
+    assertThat(listener.jobExecutedCount.get()).isEqualTo(0);
   }
 
   @Test
@@ -59,16 +59,16 @@ public class SimpleJobListenerTest {
     
     listener.onJobExecuted(mockResult, null);
     
-    assertThat(listener.jobSubmittedCount).isEqualTo(0);
-    assertThat(listener.jobExecutedCount).isEqualTo(1);
+    assertThat(listener.jobSubmittedCount.get()).isEqualTo(0);
+    assertThat(listener.jobExecutedCount.get()).isEqualTo(1);
   }
 
   @Test
   void testOnJobExecutedWithNullResult() {
     listener.onJobExecuted(null, null);
     
-    assertThat(listener.jobSubmittedCount).isEqualTo(0);
-    assertThat(listener.jobExecutedCount).isEqualTo(1);
+    assertThat(listener.jobSubmittedCount.get()).isEqualTo(0);
+    assertThat(listener.jobExecutedCount.get()).isEqualTo(1);
   }
 
   @Test
@@ -77,8 +77,8 @@ public class SimpleJobListenerTest {
     
     listener.onJobExecuted(null, exception);
     
-    assertThat(listener.jobSubmittedCount).isEqualTo(0);
-    assertThat(listener.jobExecutedCount).isEqualTo(1);
+    assertThat(listener.jobSubmittedCount.get()).isEqualTo(0);
+    assertThat(listener.jobExecutedCount.get()).isEqualTo(1);
   }
 
   @Test
@@ -87,8 +87,8 @@ public class SimpleJobListenerTest {
     listener.onJobSubmitted(null, null);
     listener.onJobSubmitted(null, null);
     
-    assertThat(listener.jobSubmittedCount).isEqualTo(3);
-    assertThat(listener.jobExecutedCount).isEqualTo(0);
+    assertThat(listener.jobSubmittedCount.get()).isEqualTo(3);
+    assertThat(listener.jobExecutedCount.get()).isEqualTo(0);
   }
 
   @Test
@@ -96,8 +96,8 @@ public class SimpleJobListenerTest {
     listener.onJobExecuted(null, null);
     listener.onJobExecuted(null, null);
     
-    assertThat(listener.jobSubmittedCount).isEqualTo(0);
-    assertThat(listener.jobExecutedCount).isEqualTo(2);
+    assertThat(listener.jobSubmittedCount.get()).isEqualTo(0);
+    assertThat(listener.jobExecutedCount.get()).isEqualTo(2);
   }
 
   @Test
@@ -106,7 +106,7 @@ public class SimpleJobListenerTest {
     listener.onJobSubmitted(null, null);
     listener.onJobExecuted(null, null);
     
-    assertThat(listener.jobSubmittedCount).isEqualTo(1);
-    assertThat(listener.jobExecutedCount).isEqualTo(1);
+    assertThat(listener.jobSubmittedCount.get()).isEqualTo(1);
+    assertThat(listener.jobExecutedCount.get()).isEqualTo(1);
   }
 }

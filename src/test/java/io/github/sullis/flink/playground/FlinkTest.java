@@ -51,8 +51,8 @@ public class FlinkTest {
     env.execute();
     env.close();
 
-    assertThat(jobListener.jobSubmittedCount).isEqualTo(1);
-    assertThat(jobListener.jobExecutedCount).isEqualTo(1);
+    assertThat(jobListener.jobSubmittedCount.get()).isEqualTo(1);
+    assertThat(jobListener.jobExecutedCount.get()).isEqualTo(1);
 
     // System.out.println("sinkFunction: " + sinkFunction);
     // assertThat(sinkFunction.invocationCount.intValue()).isEqualTo(1);
