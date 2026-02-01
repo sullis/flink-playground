@@ -102,14 +102,14 @@ public class TestReporterEdgeCasesTest {
   }
 
   @Test
-  void testMetricMapsAreModifiable() {
+  void testMetricMapReflectsInternalState() {
     Counter counter = new SimpleCounter();
     reporter.notifyOfAddedMetric(counter, "counter.1", mockMetricGroup);
     
     Map<Counter, String> counters = reporter.counters();
     assertThat(counters).hasSize(1);
     
-    // The map should be the internal map, so modifications affect the reporter
+    // Verify the map reflects the current internal state
     int initialSize = counters.size();
     assertThat(initialSize).isEqualTo(1);
   }

@@ -185,14 +185,14 @@ public class SimpleSinkFunctionEdgeCasesTest {
   }
 
   @Test
-  void testMultipleFinishCallsIdempotent() throws Exception {
+  void testFinishCountsAllInvocations() throws Exception {
     sinkFunction.finish();
     sinkFunction.finish();
     sinkFunction.finish();
     sinkFunction.finish();
     sinkFunction.finish();
     
-    // finish() should be callable multiple times
+    // finish() increments the counter on each call
     assertThat(sinkFunction.finishCount.get()).isEqualTo(5);
   }
 }
