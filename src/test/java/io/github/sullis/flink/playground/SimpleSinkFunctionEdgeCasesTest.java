@@ -63,24 +63,27 @@ public class SimpleSinkFunctionEdgeCasesTest {
     CountDownLatch latch = new CountDownLatch(numThreads);
     SinkFunction.Context context = mock(SinkFunction.Context.class);
     
-    for (int i = 0; i < numThreads; i++) {
-      final int index = i;
-      executor.submit(() -> {
-        try {
-          Row row = Row.of(index, (long) index, "test-" + index);
-          sinkFunction.invoke(row, context);
-        } catch (Exception e) {
-          throw new RuntimeException(e);
-        } finally {
-          latch.countDown();
-        }
-      });
+    try {
+      for (int i = 0; i < numThreads; i++) {
+        final int index = i;
+        executor.submit(() -> {
+          try {
+            Row row = Row.of(index, (long) index, "test-" + index);
+            sinkFunction.invoke(row, context);
+          } catch (Exception e) {
+            throw new RuntimeException(e);
+          } finally {
+            latch.countDown();
+          }
+        });
+      }
+      
+      latch.await(5, TimeUnit.SECONDS);
+      
+      assertThat(sinkFunction.invocationCount.get()).isEqualTo(numThreads);
+    } finally {
+      executor.shutdown();
     }
-    
-    latch.await(5, TimeUnit.SECONDS);
-    executor.shutdown();
-    
-    assertThat(sinkFunction.invocationCount.get()).isEqualTo(numThreads);
   }
 
   @Test
@@ -89,24 +92,27 @@ public class SimpleSinkFunctionEdgeCasesTest {
     ExecutorService executor = Executors.newFixedThreadPool(numThreads);
     CountDownLatch latch = new CountDownLatch(numThreads);
     
-    for (int i = 0; i < numThreads; i++) {
-      final long timestamp = i * 1000L;
-      executor.submit(() -> {
-        try {
-          Watermark watermark = new Watermark(timestamp);
-          sinkFunction.writeWatermark(watermark);
-        } catch (Exception e) {
-          throw new RuntimeException(e);
-        } finally {
-          latch.countDown();
-        }
-      });
+    try {
+      for (int i = 0; i < numThreads; i++) {
+        final long timestamp = i * 1000L;
+        executor.submit(() -> {
+          try {
+            Watermark watermark = new Watermark(timestamp);
+            sinkFunction.writeWatermark(watermark);
+          } catch (Exception e) {
+            throw new RuntimeException(e);
+          } finally {
+            latch.countDown();
+          }
+        });
+      }
+      
+      latch.await(5, TimeUnit.SECONDS);
+      
+      assertThat(sinkFunction.watermarkWriteCount.get()).isEqualTo(numThreads);
+    } finally {
+      executor.shutdown();
     }
-    
-    latch.await(5, TimeUnit.SECONDS);
-    executor.shutdown();
-    
-    assertThat(sinkFunction.watermarkWriteCount.get()).isEqualTo(numThreads);
   }
 
   @Test
@@ -116,33 +122,36 @@ public class SimpleSinkFunctionEdgeCasesTest {
     CountDownLatch latch = new CountDownLatch(numThreads);
     SinkFunction.Context context = mock(SinkFunction.Context.class);
     
-    for (int i = 0; i < numThreads; i++) {
-      final int index = i;
-      executor.submit(() -> {
-        try {
-          if (index % 3 == 0) {
-            Row row = Row.of(index, (long) index, "test-" + index);
-            sinkFunction.invoke(row, context);
-          } else if (index % 3 == 1) {
-            Watermark watermark = new Watermark(index * 1000L);
-            sinkFunction.writeWatermark(watermark);
-          } else {
-            sinkFunction.finish();
+    try {
+      for (int i = 0; i < numThreads; i++) {
+        final int index = i;
+        executor.submit(() -> {
+          try {
+            if (index % 3 == 0) {
+              Row row = Row.of(index, (long) index, "test-" + index);
+              sinkFunction.invoke(row, context);
+            } else if (index % 3 == 1) {
+              Watermark watermark = new Watermark(index * 1000L);
+              sinkFunction.writeWatermark(watermark);
+            } else {
+              sinkFunction.finish();
+            }
+          } catch (Exception e) {
+            throw new RuntimeException(e);
+          } finally {
+            latch.countDown();
           }
-        } catch (Exception e) {
-          throw new RuntimeException(e);
-        } finally {
-          latch.countDown();
-        }
-      });
+        });
+      }
+      
+      latch.await(5, TimeUnit.SECONDS);
+      
+      assertThat(sinkFunction.invocationCount.get()).isEqualTo(10);
+      assertThat(sinkFunction.watermarkWriteCount.get()).isEqualTo(10);
+      assertThat(sinkFunction.finishCount.get()).isEqualTo(10);
+    } finally {
+      executor.shutdown();
     }
-    
-    latch.await(5, TimeUnit.SECONDS);
-    executor.shutdown();
-    
-    assertThat(sinkFunction.invocationCount.get()).isEqualTo(10);
-    assertThat(sinkFunction.watermarkWriteCount.get()).isEqualTo(10);
-    assertThat(sinkFunction.finishCount.get()).isEqualTo(10);
   }
 
   @Test

@@ -58,8 +58,8 @@ public class FlinkIntegrationTest {
     env.execute("Multi-Row Test Job");
     env.close();
 
-    assertThat(jobListener.jobSubmittedCount).isEqualTo(1);
-    assertThat(jobListener.jobExecutedCount).isEqualTo(1);
+    assertThat(jobListener.jobSubmittedCount.get()).isEqualTo(1);
+    assertThat(jobListener.jobExecutedCount.get()).isEqualTo(1);
   }
 
   @Test
@@ -86,8 +86,8 @@ public class FlinkIntegrationTest {
     env.execute("Parallelism Test Job");
     env.close();
 
-    assertThat(jobListener.jobSubmittedCount).isEqualTo(1);
-    assertThat(jobListener.jobExecutedCount).isEqualTo(1);
+    assertThat(jobListener.jobSubmittedCount.get()).isEqualTo(1);
+    assertThat(jobListener.jobExecutedCount.get()).isEqualTo(1);
   }
 
   @Test
@@ -111,8 +111,8 @@ public class FlinkIntegrationTest {
     env.execute("Single Row Test Job");
     env.close();
 
-    assertThat(jobListener.jobSubmittedCount).isEqualTo(1);
-    assertThat(jobListener.jobExecutedCount).isEqualTo(1);
+    assertThat(jobListener.jobSubmittedCount.get()).isEqualTo(1);
+    assertThat(jobListener.jobExecutedCount.get()).isEqualTo(1);
   }
 
   @Test
@@ -146,8 +146,8 @@ public class FlinkIntegrationTest {
     env.execute("Complex Row Types Test Job");
     env.close();
 
-    assertThat(jobListener.jobSubmittedCount).isEqualTo(1);
-    assertThat(jobListener.jobExecutedCount).isEqualTo(1);
+    assertThat(jobListener.jobSubmittedCount.get()).isEqualTo(1);
+    assertThat(jobListener.jobExecutedCount.get()).isEqualTo(1);
   }
 
   @Test
@@ -176,12 +176,12 @@ public class FlinkIntegrationTest {
     env.execute("Multiple Listeners Test Job");
     env.close();
 
-    assertThat(listener1.jobSubmittedCount).isEqualTo(1);
-    assertThat(listener1.jobExecutedCount).isEqualTo(1);
-    assertThat(listener2.jobSubmittedCount).isEqualTo(1);
-    assertThat(listener2.jobExecutedCount).isEqualTo(1);
-    assertThat(listener3.jobSubmittedCount).isEqualTo(1);
-    assertThat(listener3.jobExecutedCount).isEqualTo(1);
+    assertThat(listener1.jobSubmittedCount.get()).isEqualTo(1);
+    assertThat(listener1.jobExecutedCount.get()).isEqualTo(1);
+    assertThat(listener2.jobSubmittedCount.get()).isEqualTo(1);
+    assertThat(listener2.jobExecutedCount.get()).isEqualTo(1);
+    assertThat(listener3.jobSubmittedCount.get()).isEqualTo(1);
+    assertThat(listener3.jobExecutedCount.get()).isEqualTo(1);
   }
 
   @Test
@@ -190,7 +190,7 @@ public class FlinkIntegrationTest {
     StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment(config);
     env.setParallelism(1);
     env.registerJobListener(jobListener);
-    // Note: No checkpointing enabled
+    // Explicitly run without checkpointing to verify it is optional
 
     RowTypeInfo typeInfo = new RowTypeInfo(
         new TypeInformation[]{Types.STRING}, 
@@ -209,7 +209,7 @@ public class FlinkIntegrationTest {
     env.execute("No Checkpointing Test Job");
     env.close();
 
-    assertThat(jobListener.jobSubmittedCount).isEqualTo(1);
-    assertThat(jobListener.jobExecutedCount).isEqualTo(1);
+    assertThat(jobListener.jobSubmittedCount.get()).isEqualTo(1);
+    assertThat(jobListener.jobExecutedCount.get()).isEqualTo(1);
   }
 }

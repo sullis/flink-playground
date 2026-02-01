@@ -32,8 +32,8 @@ public class SimpleJobListenerEdgeCasesTest {
     listener.onJobSubmitted(null, null);
     listener.onJobExecuted(null, null);
     
-    assertThat(listener.jobSubmittedCount).isEqualTo(3);
-    assertThat(listener.jobExecutedCount).isEqualTo(3);
+    assertThat(listener.jobSubmittedCount.get()).isEqualTo(3);
+    assertThat(listener.jobExecutedCount.get()).isEqualTo(3);
   }
 
   @Test
@@ -42,8 +42,8 @@ public class SimpleJobListenerEdgeCasesTest {
       listener.onJobSubmitted(null, null);
     }
     
-    assertThat(listener.jobSubmittedCount).isEqualTo(10);
-    assertThat(listener.jobExecutedCount).isEqualTo(0);
+    assertThat(listener.jobSubmittedCount.get()).isEqualTo(10);
+    assertThat(listener.jobExecutedCount.get()).isEqualTo(0);
   }
 
   @Test
@@ -52,8 +52,8 @@ public class SimpleJobListenerEdgeCasesTest {
       listener.onJobExecuted(null, null);
     }
     
-    assertThat(listener.jobSubmittedCount).isEqualTo(0);
-    assertThat(listener.jobExecutedCount).isEqualTo(5);
+    assertThat(listener.jobSubmittedCount.get()).isEqualTo(0);
+    assertThat(listener.jobExecutedCount.get()).isEqualTo(5);
   }
 
   @Test
@@ -66,8 +66,8 @@ public class SimpleJobListenerEdgeCasesTest {
     listener.onJobExecuted(null, error2);
     listener.onJobExecuted(null, null);
     
-    assertThat(listener.jobSubmittedCount).isEqualTo(2);
-    assertThat(listener.jobExecutedCount).isEqualTo(2);
+    assertThat(listener.jobSubmittedCount.get()).isEqualTo(2);
+    assertThat(listener.jobExecutedCount.get()).isEqualTo(2);
   }
 
   @Test
@@ -78,8 +78,8 @@ public class SimpleJobListenerEdgeCasesTest {
     listener.onJobSubmitted(mockClient, null);
     listener.onJobExecuted(mockResult, null);
     
-    assertThat(listener.jobSubmittedCount).isEqualTo(1);
-    assertThat(listener.jobExecutedCount).isEqualTo(1);
+    assertThat(listener.jobSubmittedCount.get()).isEqualTo(1);
+    assertThat(listener.jobExecutedCount.get()).isEqualTo(1);
   }
 
   @Test
@@ -88,21 +88,24 @@ public class SimpleJobListenerEdgeCasesTest {
     ExecutorService executor = Executors.newFixedThreadPool(numThreads);
     CountDownLatch latch = new CountDownLatch(numThreads);
     
-    for (int i = 0; i < numThreads; i++) {
-      executor.submit(() -> {
-        try {
-          listener.onJobSubmitted(null, null);
-        } finally {
-          latch.countDown();
-        }
-      });
+    try {
+      for (int i = 0; i < numThreads; i++) {
+        executor.submit(() -> {
+          try {
+            listener.onJobSubmitted(null, null);
+          } finally {
+            latch.countDown();
+          }
+        });
+      }
+      
+      latch.await(5, TimeUnit.SECONDS);
+      
+      assertThat(listener.jobSubmittedCount.get()).isEqualTo(numThreads);
+      assertThat(listener.jobExecutedCount.get()).isEqualTo(0);
+    } finally {
+      executor.shutdown();
     }
-    
-    latch.await(5, TimeUnit.SECONDS);
-    executor.shutdown();
-    
-    assertThat(listener.jobSubmittedCount).isEqualTo(numThreads);
-    assertThat(listener.jobExecutedCount).isEqualTo(0);
   }
 
   @Test
@@ -111,21 +114,24 @@ public class SimpleJobListenerEdgeCasesTest {
     ExecutorService executor = Executors.newFixedThreadPool(numThreads);
     CountDownLatch latch = new CountDownLatch(numThreads);
     
-    for (int i = 0; i < numThreads; i++) {
-      executor.submit(() -> {
-        try {
-          listener.onJobExecuted(null, null);
-        } finally {
-          latch.countDown();
-        }
-      });
+    try {
+      for (int i = 0; i < numThreads; i++) {
+        executor.submit(() -> {
+          try {
+            listener.onJobExecuted(null, null);
+          } finally {
+            latch.countDown();
+          }
+        });
+      }
+      
+      latch.await(5, TimeUnit.SECONDS);
+      
+      assertThat(listener.jobSubmittedCount.get()).isEqualTo(0);
+      assertThat(listener.jobExecutedCount.get()).isEqualTo(numThreads);
+    } finally {
+      executor.shutdown();
     }
-    
-    latch.await(5, TimeUnit.SECONDS);
-    executor.shutdown();
-    
-    assertThat(listener.jobSubmittedCount).isEqualTo(0);
-    assertThat(listener.jobExecutedCount).isEqualTo(numThreads);
   }
 
   @Test
@@ -134,26 +140,29 @@ public class SimpleJobListenerEdgeCasesTest {
     ExecutorService executor = Executors.newFixedThreadPool(numThreads);
     CountDownLatch latch = new CountDownLatch(numThreads);
     
-    // Half submit, half execute
-    for (int i = 0; i < numThreads; i++) {
-      final int index = i;
-      executor.submit(() -> {
-        try {
-          if (index % 2 == 0) {
-            listener.onJobSubmitted(null, null);
-          } else {
-            listener.onJobExecuted(null, null);
+    try {
+      // Half submit, half execute
+      for (int i = 0; i < numThreads; i++) {
+        final int index = i;
+        executor.submit(() -> {
+          try {
+            if (index % 2 == 0) {
+              listener.onJobSubmitted(null, null);
+            } else {
+              listener.onJobExecuted(null, null);
+            }
+          } finally {
+            latch.countDown();
           }
-        } finally {
-          latch.countDown();
-        }
-      });
+        });
+      }
+      
+      latch.await(5, TimeUnit.SECONDS);
+      
+      assertThat(listener.jobSubmittedCount.get()).isEqualTo(10);
+      assertThat(listener.jobExecutedCount.get()).isEqualTo(10);
+    } finally {
+      executor.shutdown();
     }
-    
-    latch.await(5, TimeUnit.SECONDS);
-    executor.shutdown();
-    
-    assertThat(listener.jobSubmittedCount).isEqualTo(10);
-    assertThat(listener.jobExecutedCount).isEqualTo(10);
   }
 }
