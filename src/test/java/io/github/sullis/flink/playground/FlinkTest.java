@@ -61,4 +61,111 @@ public class FlinkTest {
   private Row makeRow() {
     return Row.of(1, 1L, "Hello");
   }
+
+  private Row makeRow(int intValue, long longValue, String stringValue) {
+    return Row.of(intValue, longValue, stringValue);
+  }
+
+  @Test
+  void testStreamExecutionWithMultipleElements() throws Exception {
+    SimpleJobListener jobListener = new SimpleJobListener();
+    StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment(config);
+    env.setParallelism(1);
+    env.registerJobListener(jobListener);
+
+    RowTypeInfo typeInfo = new RowTypeInfo(new TypeInformation[]{Types.INT, Types.LONG, Types.STRING}, new String[]{"a", "b", "c"});
+    List<Row> data = new ArrayList<>();
+    // Add multiple rows to test batch processing
+    for (int i = 0; i < 10; i++) {
+      data.add(makeRow(i, (long) i * 2, "Value" + i));
+    }
+
+    DataStream<Row> sourceDataStream = env.fromCollection(data).returns(typeInfo);
+    SimpleSinkFunction sinkFunction = new SimpleSinkFunction();
+    DataStreamSink<Row> dataStreamSink = sourceDataStream.addSink(sinkFunction);
+
+    assertThat(dataStreamSink).isNotNull();
+
+    env.execute();
+    env.close();
+
+    assertThat(jobListener.jobSubmittedCount).isEqualTo(1);
+    assertThat(jobListener.jobExecutedCount).isEqualTo(1);
+  }
+
+  @Test
+  void testStreamExecutionWithDifferentParallelism() throws Exception {
+    SimpleJobListener jobListener = new SimpleJobListener();
+    StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment(config);
+    env.setParallelism(2); // Different parallelism
+    env.registerJobListener(jobListener);
+
+    RowTypeInfo typeInfo = new RowTypeInfo(new TypeInformation[]{Types.INT, Types.LONG, Types.STRING}, new String[]{"a", "b", "c"});
+    List<Row> data = new ArrayList<>();
+    data.add(makeRow());
+
+    DataStream<Row> sourceDataStream = env.fromCollection(data).returns(typeInfo);
+    SimpleSinkFunction sinkFunction = new SimpleSinkFunction();
+    DataStreamSink<Row> dataStreamSink = sourceDataStream.addSink(sinkFunction);
+
+    assertThat(dataStreamSink).isNotNull();
+
+    env.execute();
+    env.close();
+
+    assertThat(jobListener.jobSubmittedCount).isEqualTo(1);
+    assertThat(jobListener.jobExecutedCount).isEqualTo(1);
+  }
+
+  @Test
+  void testStreamExecutionWithoutCheckpointing() throws Exception {
+    SimpleJobListener jobListener = new SimpleJobListener();
+    StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment(config);
+    env.setParallelism(1);
+    env.registerJobListener(jobListener);
+    // No checkpointing enabled
+
+    RowTypeInfo typeInfo = new RowTypeInfo(new TypeInformation[]{Types.INT, Types.LONG, Types.STRING}, new String[]{"a", "b", "c"});
+    List<Row> data = new ArrayList<>();
+    data.add(makeRow());
+
+    DataStream<Row> sourceDataStream = env.fromCollection(data).returns(typeInfo);
+    SimpleSinkFunction sinkFunction = new SimpleSinkFunction();
+    DataStreamSink<Row> dataStreamSink = sourceDataStream.addSink(sinkFunction);
+
+    assertThat(dataStreamSink).isNotNull();
+
+    env.execute();
+    env.close();
+
+    assertThat(jobListener.jobSubmittedCount).isEqualTo(1);
+    assertThat(jobListener.jobExecutedCount).isEqualTo(1);
+  }
+
+  @Test
+  void testStreamExecutionWithDifferentDataTypes() throws Exception {
+    SimpleJobListener jobListener = new SimpleJobListener();
+    StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment(config);
+    env.setParallelism(1);
+    env.registerJobListener(jobListener);
+
+    RowTypeInfo typeInfo = new RowTypeInfo(new TypeInformation[]{Types.INT, Types.LONG, Types.STRING}, new String[]{"a", "b", "c"});
+    List<Row> data = new ArrayList<>();
+    // Add rows with different data types and values
+    data.add(makeRow(Integer.MAX_VALUE, Long.MAX_VALUE, "MaxValues"));
+    data.add(makeRow(Integer.MIN_VALUE, Long.MIN_VALUE, "MinValues"));
+    data.add(makeRow(0, 0L, ""));
+
+    DataStream<Row> sourceDataStream = env.fromCollection(data).returns(typeInfo);
+    SimpleSinkFunction sinkFunction = new SimpleSinkFunction();
+    DataStreamSink<Row> dataStreamSink = sourceDataStream.addSink(sinkFunction);
+
+    assertThat(dataStreamSink).isNotNull();
+
+    env.execute();
+    env.close();
+
+    assertThat(jobListener.jobSubmittedCount).isEqualTo(1);
+    assertThat(jobListener.jobExecutedCount).isEqualTo(1);
+  }
 }

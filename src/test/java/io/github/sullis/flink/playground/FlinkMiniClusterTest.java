@@ -35,4 +35,49 @@ public class FlinkMiniClusterTest {
     assertThatThrownBy(() -> restClusterClient.getJobStatus(bogusJobId).get())
         .hasMessageContaining("Could not find Flink job (" + bogusJobId.toString() + ")");
   }
+
+  @Test
+  public void testClusterIdIsConsistent(@InjectClusterClient RestClusterClient<?> restClusterClient) {
+    assertThat(restClusterClient).isNotNull();
+    
+    Object clusterId1 = restClusterClient.getClusterId();
+    Object clusterId2 = restClusterClient.getClusterId();
+    
+    assertThat(clusterId1).isNotNull();
+    assertThat(clusterId2).isNotNull();
+    assertThat(clusterId1).isEqualTo(clusterId2);
+  }
+
+  @Test
+  public void testMultipleJobIdChecks(@InjectClusterClient RestClusterClient<?> restClusterClient) {
+    assertThat(restClusterClient).isNotNull();
+    
+    JobID jobId1 = new JobID();
+    JobID jobId2 = new JobID();
+    
+    assertThat(jobId1).isNotEqualTo(jobId2);
+    
+    // Both should fail since neither job exists
+    assertThatThrownBy(() -> restClusterClient.getJobStatus(jobId1).get())
+        .hasMessageContaining("Could not find Flink job");
+    
+    assertThatThrownBy(() -> restClusterClient.getJobStatus(jobId2).get())
+        .hasMessageContaining("Could not find Flink job");
+  }
+
+  @Test
+  public void testStreamEnvironmentParallelismConfiguration(@InjectClusterClient RestClusterClient<?> restClusterClient) {
+    assertThat(restClusterClient).isNotNull();
+    
+    StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+    assertThat(env).isInstanceOf(TestStreamEnvironment.class);
+    
+    TestStreamEnvironment testEnv = (TestStreamEnvironment) env;
+    
+    // Verify default parallelism
+    assertThat(testEnv.getParallelism()).isEqualTo(1);
+    
+    // Verify max parallelism
+    assertThat(testEnv.getMaxParallelism()).isEqualTo(-1);
+  }
 }
