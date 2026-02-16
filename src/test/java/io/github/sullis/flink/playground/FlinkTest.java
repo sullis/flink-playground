@@ -89,8 +89,8 @@ public class FlinkTest {
     env.execute();
     env.close();
 
-    assertThat(jobListener.jobSubmittedCount).isEqualTo(1);
-    assertThat(jobListener.jobExecutedCount).isEqualTo(1);
+    assertThat(jobListener.jobSubmittedCount.get()).isEqualTo(1);
+    assertThat(jobListener.jobExecutedCount.get()).isEqualTo(1);
   }
 
   @Test
@@ -113,8 +113,8 @@ public class FlinkTest {
     env.execute();
     env.close();
 
-    assertThat(jobListener.jobSubmittedCount).isEqualTo(1);
-    assertThat(jobListener.jobExecutedCount).isEqualTo(1);
+    assertThat(jobListener.jobSubmittedCount.get()).isEqualTo(1);
+    assertThat(jobListener.jobExecutedCount.get()).isEqualTo(1);
   }
 
   @Test
@@ -140,7 +140,7 @@ public class FlinkTest {
     env.execute();
     env.close();
 
-    assertThat(jobListener.jobSubmittedCount).isEqualTo(1);
-    assertThat(jobListener.jobExecutedCount).isEqualTo(1);
+    assertThat(jobListener.jobSubmittedCount.get()).isEqualTo(1);
+    assertThat(jobListener.jobExecutedCount.get()).isEqualTo(1);
   }
 }
