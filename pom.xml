@@ -26,8 +26,8 @@
 
   <properties>
     <logback.version>1.5.32</logback.version>
-    <slf4j.version>2.0.17</slf4j.version>
-    <jackson.version>2.21.0</jackson.version>
+    <slf4j.version>2.0.18</slf4j.version>
+    <jackson.version>2.21.3</jackson.version>
     <flink.version>2.0.0</flink.version>
     <iceberg.flink.version>1.20</iceberg.flink.version>
     <iceberg.version>1.10.1</iceberg.version>
@@ -46,21 +46,21 @@
       <dependency>
         <groupId>org.testcontainers</groupId>
         <artifactId>testcontainers-bom</artifactId>
-        <version>2.0.3</version>
+        <version>2.0.5</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.junit</groupId>
         <artifactId>junit-bom</artifactId>
-        <version>6.1.0-M1</version>
+        <version>6.1.0-RC1</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>software.amazon.awssdk</groupId>
         <artifactId>bom</artifactId>
-        <version>2.41.29</version>
+        <version>2.44.7</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -126,13 +126,13 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>5.21.0</version>
+      <version>5.23.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-junit-jupiter</artifactId>
-      <version>5.21.0</version>
+      <version>5.23.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -143,12 +143,12 @@
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>2.21.0</version>
+      <version>2.22.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>33.5.0-jre</version>
+      <version>33.6.0-jre</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -301,7 +301,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.5.4</version>
+        <version>3.5.5</version>
         <configuration>
           <forkCount>8</forkCount>
           <reuseForks>true</reuseForks>
